@@ -1,6 +1,7 @@
 import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { AuthContext } from '@/contexts/AuthContext';
+import Spinner from './Spinner';
 
 const ProtectedRoute = ({ children, roles }) => {
   const { user, loading } = useContext(AuthContext);
@@ -16,9 +17,9 @@ const ProtectedRoute = ({ children, roles }) => {
     }
   }, [user, loading, router, roles]);
 
-  if (loading || !user) {
-    return <div>Loading...</div>;
-  }
+  
+  if (loading || !user) return <div className="flex justify-center py-10"><Spinner /></div>;
+
 
   return children;
 };

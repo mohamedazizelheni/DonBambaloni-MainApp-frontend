@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import "@/styles/globals.css";
 import Sidebar from "@/components/layout/Sidebar";
 import useAuth from '@/hooks/useAuth';
+import Spinner from "@/components/common/Spinner";
 
 export default function App({ Component, pageProps }) {
   return (
@@ -17,9 +18,7 @@ export default function App({ Component, pageProps }) {
 function MainComponent({ Component, pageProps }) {
   const { user, loading } = useAuth(); 
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <div className="flex justify-center py-10"><Spinner /></div>;
 
   return (
     <div>

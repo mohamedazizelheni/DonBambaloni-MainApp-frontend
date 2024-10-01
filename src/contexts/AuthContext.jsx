@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
         setLoading(false); // Don't try to fetch user, just finish loading
         return;
       }
-
       try {
         const response = await api.get('/auth/me');
         setUser(response.data.user);
@@ -30,7 +29,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     fetchUser();
-  }, [router.pathname]); // Watch the route changes
+  }, [router.pathname]);
 
   return (
     <AuthContext.Provider value={{ user, setUser, loading }}>

@@ -1,10 +1,13 @@
 import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { AuthContext } from '@/contexts/AuthContext';
+import Spinner from './Spinner';
 
 const RedirectIfAuthenticated = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
   const router = useRouter();
+  console.log(user)
+
 
   useEffect(() => {
     if (!loading && user) {
@@ -21,9 +24,8 @@ const RedirectIfAuthenticated = ({ children }) => {
     }
   }, [user, loading, router]);
 
-  if (loading || user) {
-    return <div>Loading...</div>;
-  }
+  if (loading || user) return <div className="flex justify-center py-10"><Spinner /></div>;
+
 
   return children;
 };
