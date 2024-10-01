@@ -1,7 +1,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import React, { useState } from 'react';
 import useUsers from '@/hooks/useUsers';
-import { ROLES } from '@/utils/constants';
+import { ROLES, RoleColors } from '@/utils/constants';
 import { deleteUser } from '@/services/userService';
 import Button from '@/components/common/Button';
 import { RiDeleteBin6Fill, RiEdit2Fill, RiUser3Line, RiMore2Line, RiCloseLine } from "react-icons/ri";
@@ -277,9 +277,10 @@ const UserList = () => {
                     </div>
                   </td>
                   <td className="py-2 px-6">
-                    <span className={`px-2 py-1 rounded-full text-[12px] font-semibold ${user.role === 'Admin' ? 'bg-green-100 border border-green-400 text-green-800' : 'bg-blue-100 text-blue-600 border border-blue-400'}`}>
-                      {user.role}
-                    </span>
+                  <span className={`px-2 py-1 rounded-full text-[12px] font-semibold ${RoleColors[user.role]}`}>
+                    {user.role}
+                  </span>
+
                   </td>
                   <td className="py-2 px-6">
                     <div className="flex items-center space-x-2 text-sm">

@@ -11,6 +11,7 @@ import { FiLogOut } from 'react-icons/fi';
 import Link from 'next/link';
 import { logout } from '@/services/authService';
 import useAuth from '@/hooks/useAuth';
+import Image from 'next/image';
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false); //sidebar visibility
@@ -64,9 +65,8 @@ export default function Sidebar() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          <a href="#" class="flex items-center ps-2.5 mb-8 ">
-         <img src="https://flowbite.com/docs/images/logo.svg" class="h-6 me-3 sm:h-7" alt="Flowbite Logo" />
-         <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
+          <a href="#" >
+         <Image src="/images/logo-bambalouni.webp" width={150} height={150} class="h-20 mb-8" alt="DonBambaloni Logo" />
       </a>
           <ul className="space-y-2 font-medium ">
             <li>

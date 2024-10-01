@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children, roles }) => {
   useEffect(() => {
     if (!loading) {
       if (!user) {
-        router.push('/login');
+        router.replace('/login');//  replace to prevent back navigation
       } else if (roles && !roles.includes(user.role)) {
         router.push('/unauthorized');
       }
