@@ -1,5 +1,4 @@
 // src/utils/api.js
-
 import axios from 'axios';
 import Router from 'next/router';
 
@@ -14,7 +13,7 @@ let failedQueue = [];
 const processQueue = (error, token = null) => {
   failedQueue.forEach(prom => {
     if (error) {
-      prom.reject(error);
+      prom.reject(error); 
     } else {
       prom.resolve(token);
     }
@@ -32,7 +31,7 @@ api.interceptors.response.use(
     const authUrls = ['/auth/login', '/auth/refresh-token', '/auth/logout'];
 
     if (
-      error.response.status === 401 &&
+      error.response.status === 403 &&
       !originalRequest._retry &&
       !authUrls.some(url => originalRequest.url.includes(url))
     ) {
@@ -60,7 +59,6 @@ api.interceptors.response.use(
         return api(originalRequest); // Retry original request
       } catch (refreshError) {
         processQueue(refreshError, null);
-        // Redirect to login if refresh token also fails
         Router.push('/login');
         return Promise.reject(refreshError);
       } finally {

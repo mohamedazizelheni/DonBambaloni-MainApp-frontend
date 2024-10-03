@@ -8,6 +8,7 @@ export const getAllUsers = async (params) => {
 export const getUserProfile = async () => {
   const response = await api.get('/users/profile');
   return response.data;
+  
 };
 
 export const updateUserProfile = async (data) => {

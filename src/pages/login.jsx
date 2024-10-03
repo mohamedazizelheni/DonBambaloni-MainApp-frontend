@@ -6,6 +6,7 @@ import Button from '@/components/common/Button';
 import { useRouter } from 'next/router';
 import RedirectIfAuthenticated from '@/components/common/RedirectIfAuthenticated';
 import  {AuthContext}  from '@/contexts/AuthContext';
+import api from '@/utils/api';
 
 const Login = () => {
   const { setUser } = useContext(AuthContext);
@@ -33,7 +34,9 @@ const Login = () => {
     const { email, password } = formData;
 
     try {
-      await loginService(email, password);
+      const loginResponse = await loginService(email, password);
+      api.defaults.headers.common['Authorization'] = `Bearer ${loginResponse.accessToken}`;
+
       const userData = await fetchUser();
       setUser(userData.user);
       // Redirect will happen via useEffect in RedirectIfAuthenticated

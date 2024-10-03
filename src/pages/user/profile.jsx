@@ -4,11 +4,16 @@ import { useRouter } from 'next/router';
 import { getUserProfile, updateUserProfile } from '@/services/userService';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
-import axios from 'axios';
+import Image from 'next/image';
+import SalaryHistoryModal from '@/components/profile/SalaryHistoryModal';
+import AvailabilityHistoryModal from '@/components/profile/AvailabilityHistoryModal';
+import ActionHistoryModal from '@/components/profile/ActionHistoryModal';
 
 const Profile = () => {
-  const { user, loading } = useAuth();
+  const { user, loading,refreshUser} = useAuth();
   const router = useRouter();
+  const [salary, setSalary] = useState(null);
+  const [isAvailable, setIsAvailable] = useState(null);
 
   const [formData, setFormData] = useState({
     username: '',
@@ -16,7 +21,7 @@ const Profile = () => {
     password: '',
     nationality: '',
     sex: '',
-    image: null, // For image upload
+    image: null, 
   });
 
   const [previewImage, setPreviewImage] = useState(null); // For image preview
@@ -24,21 +29,36 @@ const Profile = () => {
   const [success, setSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+   // Histories
+   const [salaryHistory, setSalaryHistory] = useState([]);
+   const [availabilityHistory, setAvailabilityHistory] = useState([]);
+   const [actionHistory, setActionHistory] = useState([]);
+ 
+   // Modals
+   const [isSalaryModalOpen, setIsSalaryModalOpen] = useState(false);
+   const [isAvailabilityModalOpen, setIsAvailabilityModalOpen] = useState(false);
+   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
+
   // Fetch user profile data on component mount
   useEffect(() => {
     if (!loading && user) {
       const fetchProfile = async () => {
         try {
-          const { user: userProfile } = await getUserProfile();
+          //const { user: userProfile } = await getUserProfile();
           setFormData({
-            username: userProfile.username || '',
-            email: userProfile.email || '',
+            username: user.username || '',
+            email: user.email || '',
             password: '',
-            nationality: userProfile.nationality || '',
-            sex: userProfile.sex || '',
+            nationality: user.nationality || '',
+            sex: user.sex || '',
             image: null,
           });
-          setPreviewImage(userProfile.image || null);
+          setPreviewImage(user.image ? `${process.env.NEXT_PUBLIC_API_IMAGE_URL}/${user.image}` : null);
+          setSalaryHistory(user.salaryHistory || []);
+          setAvailabilityHistory(user.availabilityHistory || []);
+          setActionHistory(user.history || []);
+          setSalary(user.salary || null);
+          setIsAvailable(user.isAvailable !== undefined ? user.isAvailable : null);
         } catch (err) {
           console.error('Failed to fetch profile:', err);
           setError('Failed to load profile data.');
@@ -48,7 +68,6 @@ const Profile = () => {
       fetchProfile();
     }
   }, [user, loading]);
-
   // Handle input changes
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -88,7 +107,7 @@ const Profile = () => {
 
       // Make API call to update profile
       await updateUserProfile(formDataToSend);
-
+      refreshUser();
       setSuccess('Profile updated successfully.');
 
       // Optionally, update the user in the AuthContext
@@ -109,7 +128,6 @@ const Profile = () => {
     router.replace('/login');
     return null;
   }
-
   return (
     <div className="container mx-auto px-4 py-8">
       <h2 className="text-2xl font-semibold mb-6">My Profile</h2>
@@ -122,10 +140,13 @@ const Profile = () => {
         <div className="mb-6 text-center">
           <div className="relative inline-block">
             {previewImage ? (
-              <img
+              <Image
                 src={previewImage}
                 alt="Profile"
                 className="w-32 h-32 rounded-full object-cover border"
+                crossOrigin="anonymous"
+                width={250}
+                height={250}
               />
             ) : (
               <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
@@ -213,6 +234,69 @@ const Profile = () => {
           {isSubmitting ? 'Updating...' : 'Update Profile'}
         </Button>
       </form>
+
+       {/* Additional Data Section */}
+       <div className="mt-8">
+        <h3 className="text-xl font-semibold mb-4">Additional Information</h3>
+
+        {/* Current Salary */}
+        <div className="mb-4">
+          <span className="font-semibold">Current Salary:</span>{' '}
+          {salary !== null ? `$${salary}` : 'N/A'}
+          <Button
+            className="ml-4"
+            onClick={() => setIsSalaryModalOpen(true)}
+          >
+            View Salary History
+          </Button>
+        </div>
+
+        {/* Availability Status */}
+        <div className="mb-4">
+          <span className="font-semibold">Current Availability:</span>{' '}
+          {isAvailable !== null ? (isAvailable ? 'Available' : 'Unavailable') : 'N/A'}
+
+          <Button
+            className="ml-4"
+            onClick={() => setIsAvailabilityModalOpen(true)}
+          >
+            View Availability History
+          </Button>
+        </div>
+
+        {/* Action History */}
+        <div className="mb-4">
+          <Button onClick={() => setIsActionModalOpen(true)}>
+            View Action History
+          </Button>
+        </div>
+      </div>
+
+      {/* Modals */}
+      {isSalaryModalOpen && (
+        <SalaryHistoryModal
+          isOpen={isSalaryModalOpen}
+          onClose={() => setIsSalaryModalOpen(false)}
+          salaryHistory={salaryHistory}
+        />
+      )}
+
+      {isAvailabilityModalOpen && (
+        <AvailabilityHistoryModal
+          isOpen={isAvailabilityModalOpen}
+          onClose={() => setIsAvailabilityModalOpen(false)}
+          availabilityHistory={availabilityHistory}
+        />
+      )}
+
+      {isActionModalOpen && (
+        <ActionHistoryModal
+          isOpen={isActionModalOpen}
+          onClose={() => setIsActionModalOpen(false)}
+          actionHistory={actionHistory}
+        />
+      )}
+  
     </div>
   );
 };

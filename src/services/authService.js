@@ -2,6 +2,8 @@ import api from '@/utils/api';
 
 export const login = async (email, password) => {
   const response = await api.post('/auth/login', { email, password });
+  api.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
+
   return response.data;
 };
 
