@@ -1,5 +1,4 @@
-// src/contexts/AuthContext.js
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useCallback, useMemo } from 'react';
 import api from '@/utils/api';
 import { useRouter } from 'next/router';
 
@@ -11,10 +10,10 @@ export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(null); // Access token stored in memory
   const router = useRouter();
 
-  const publicRoutes = ['/login', '/signup'];
+  const publicRoutes = useMemo(() => ['/login', '/signup'], []);
 
   // Fetch the user from the backend using the access token
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     try {
       const response = await api.get('/auth/me');
       setUser(response.data.user); // Cache user data
@@ -23,10 +22,10 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Handle token refresh
-  const refreshToken = async () => {
+  const refreshToken = useCallback(async () => {
     try {
       const { data } = await api.post('/auth/refresh-token');
       setAccessToken(data.accessToken); // Update access token in memory
@@ -37,7 +36,7 @@ export const AuthProvider = ({ children }) => {
       setAccessToken(null); // Clear access token
       router.push('/login'); // Redirect to login
     }
-  };
+  }, [fetchUser, router]);
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -54,7 +53,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     initializeAuth();
-  }, [router.pathname]);
+  }, [router.pathname, user, publicRoutes, refreshToken]);
 
   return (
     <AuthContext.Provider value={{ user, setUser, loading, refreshUser: fetchUser }}>
