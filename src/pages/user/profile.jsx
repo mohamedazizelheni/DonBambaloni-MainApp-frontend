@@ -33,10 +33,6 @@ const Profile = () => {
   const [success, setSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [salaryHistory, setSalaryHistory] = useState([]);
-  const [availabilityHistory, setAvailabilityHistory] = useState([]);
-  const [actionHistory, setActionHistory] = useState([]);
-
   // Fetch user profile data on component mount
   useEffect(() => {
     if (!loading && user) {
@@ -53,9 +49,7 @@ const Profile = () => {
           setPreviewImage(user.image ? `${process.env.NEXT_PUBLIC_API_IMAGE_URL}/${user.image}` : null);
           setSalary(user.salary || null);
           setIsAvailable(user.isAvailable !== undefined ? user.isAvailable : null);
-          setSalaryHistory(user.salaryHistory || []);
-          setAvailabilityHistory(user.availabilityHistory || []);
-          setActionHistory(user.history || []);
+          
         } catch (err) {
           console.error('Failed to fetch profile:', err);
           setError('Failed to load profile data.');
@@ -221,9 +215,7 @@ const Profile = () => {
       <AdditionalInfo
         salary={salary}
         isAvailable={isAvailable}
-        salaryHistory={salaryHistory}
-        availabilityHistory={availabilityHistory}
-        actionHistory={actionHistory}
+       
       />
     </div>
   );

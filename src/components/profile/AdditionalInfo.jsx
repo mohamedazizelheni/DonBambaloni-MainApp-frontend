@@ -9,9 +9,6 @@ import ActionHistoryModal from '@/components/profile/ActionHistoryModal';
 const AdditionalInfo = ({
   salary,
   isAvailable,
-  salaryHistory,
-  availabilityHistory,
-  actionHistory,
 }) => {
   const [isSalaryModalOpen, setIsSalaryModalOpen] = React.useState(false);
   const [isAvailabilityModalOpen, setIsAvailabilityModalOpen] = React.useState(false);
@@ -81,7 +78,6 @@ const AdditionalInfo = ({
         <SalaryHistoryModal
           isOpen={isSalaryModalOpen}
           onClose={() => setIsSalaryModalOpen(false)}
-          salaryHistory={salaryHistory}
         />
       )}
 
@@ -89,7 +85,6 @@ const AdditionalInfo = ({
         <AvailabilityHistoryModal
           isOpen={isAvailabilityModalOpen}
           onClose={() => setIsAvailabilityModalOpen(false)}
-          availabilityHistory={availabilityHistory}
         />
       )}
 
@@ -97,7 +92,6 @@ const AdditionalInfo = ({
         <ActionHistoryModal
           isOpen={isActionModalOpen}
           onClose={() => setIsActionModalOpen(false)}
-          actionHistory={actionHistory}
         />
       )}
     </div>

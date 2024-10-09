@@ -1,10 +1,42 @@
-import React from 'react';
+import React, { useState ,useEffect } from 'react';
 import Modal from 'react-modal';
 import Button from '@/components/common/Button';
+import { getSalaryHistory } from '@/services/historyService';
+import Spinner from '@/components/common/Spinner';
+import Pagination from '../common/Pagination';
 
 Modal.setAppElement('#__next');
 
-const SalaryHistoryModal = ({ isOpen, onClose, salaryHistory }) => {
+const SalaryHistoryModal = ({ isOpen, onClose }) => {
+  const [salaryHistory, setSalaryHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1); 
+  const [totalRecords, setTotalRecords] = useState(0);
+
+  const fetchSalaryHistory = async () => {
+    try {
+      const data = await getSalaryHistory();
+      setSalaryHistory(data.salaryHistory);
+      setTotalPages(data.totalPages);
+      setTotalRecords(data.totalRecords);
+    } catch (error) {
+      console.error('Failed to fetch salary history:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+   // Fetch salary history when the modal is opened
+   useEffect(() => {
+    if (isOpen) {
+      fetchSalaryHistory(currentPage);
+    }
+  }, [isOpen,currentPage]);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
   return (
     <Modal
       isOpen={isOpen}
@@ -15,6 +47,10 @@ const SalaryHistoryModal = ({ isOpen, onClose, salaryHistory }) => {
     >
       <h2 className="text-xl font-semibold mb-4">Salary History</h2>
       <div className="overflow-y-auto max-h-96">
+      {loading ? (
+        <div className="flex justify-center py-10"><Spinner /></div>
+              ) : (
+                <>
         <table className="min-w-full bg-white">
           <thead>
             <tr>
@@ -48,6 +84,13 @@ const SalaryHistoryModal = ({ isOpen, onClose, salaryHistory }) => {
             )}
           </tbody>
         </table>
+        <Pagination
+         currentPage={currentPage}
+         totalPages={totalPages}
+         onPageChange={handlePageChange}
+       />
+       </>
+        )}
       </div>
       <div className="flex justify-end mt-4">
         <Button onClick={onClose}>Close</Button>

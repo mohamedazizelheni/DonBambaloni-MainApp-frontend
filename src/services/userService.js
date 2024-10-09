@@ -25,3 +25,7 @@ export const updateUserAvailability = async (userId, data) => {
   const response = await api.put(`/users/${userId}/availability`, data);
   return response.data;
 };
+export const getAssignedAndAvailableUsers = async (entityType,entityId) => {
+  const response = await api.get(`/users/assigned-available/${entityType}/${entityId}`);
+  return response.data;
+};

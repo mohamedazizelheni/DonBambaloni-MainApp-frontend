@@ -160,7 +160,7 @@ const UserList = () => {
               placeholder="Search users..."
               value={searchTerm}
               onChange={handleSearch}
-              className="w-full md:w-auto border rounded-lg px-4 py-2 text-base hidden md:block"
+              className="w-full md:w-auto border rounded-lg px-4 py-2 text-base hidden md:block focus:border-gray-500 focus:ring-gray-500"
             />
             <button           
               onClick={openFilterModal}
@@ -199,7 +199,7 @@ const UserList = () => {
             placeholder="Search users..."
             value={searchTerm}
             onChange={handleSearch}
-            className="w-full md:w-auto border rounded-lg px-4 py-2 text-base"
+            className="w-full md:w-auto border rounded-lg px-4 py-2 text-base "
           />
         </div>
       </div>

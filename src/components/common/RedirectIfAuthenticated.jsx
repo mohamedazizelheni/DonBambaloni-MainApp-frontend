@@ -6,7 +6,6 @@ import Spinner from './Spinner';
 const RedirectIfAuthenticated = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
   const router = useRouter();
-  console.log(user)
 
 
   useEffect(() => {

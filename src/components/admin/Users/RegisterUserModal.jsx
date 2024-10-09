@@ -58,7 +58,7 @@ const RegisterUserModal = ({ isOpen, onRequestClose, onSuccess }) => {
       onRequestClose={onRequestClose}
       contentLabel="Register User"
       className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 relative"
-      overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+      overlayClassName="fixed inset-0 bg-black bg-opacity-55 z-50 flex items-center justify-center"
     >
       {/* Close Button */}
       <button

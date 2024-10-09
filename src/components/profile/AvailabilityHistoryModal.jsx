@@ -1,10 +1,44 @@
-import React from 'react';
+import React, { useState ,useEffect } from 'react';
 import Modal from 'react-modal';
 import Button from '@/components/common/Button';
+import Spinner from '@/components/common/Spinner';
+import { getAvailabilityHistory } from '@/services/historyService';
+import Pagination from '../common/Pagination';
 
 Modal.setAppElement('#__next');
 
-const AvailabilityHistoryModal = ({ isOpen, onClose, availabilityHistory }) => {
+const AvailabilityHistoryModal = ({ isOpen, onClose }) => {
+  const [availabilityHistory, setAvailabilityHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1); 
+  const [totalRecords, setTotalRecords] = useState(0);
+
+  const fetchAvailabilityHistory = async (page = 1) => {
+    setLoading(true);
+    try {
+      const data = await getAvailabilityHistory(page);
+      setAvailabilityHistory(data.availabilityHistory);
+      setTotalPages(data.totalPages);
+      setTotalRecords(data.totalRecords);
+    } catch (error) {
+      console.error('Failed to fetch availability history:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchAvailabilityHistory(currentPage); // Fetch data when modal is open
+    }
+  }, [isOpen, currentPage]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page); // Update current page and fetch data for that page
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -15,6 +49,10 @@ const AvailabilityHistoryModal = ({ isOpen, onClose, availabilityHistory }) => {
     >
       <h2 className="text-xl font-semibold mb-4">Availability History</h2>
       <div className="overflow-y-auto max-h-96">
+      {loading ? (
+        <div className="flex justify-center py-10"><Spinner /></div>
+              ) : (
+                <>
         <table className="min-w-full bg-white">
           <thead>
             <tr>
@@ -29,7 +67,7 @@ const AvailabilityHistoryModal = ({ isOpen, onClose, availabilityHistory }) => {
                 .slice()
                 .reverse()
                 .map((record, index) => (
-                  <tr key={index}>
+                  <tr key={record._id}>
                     <td className="py-2 px-4 border-b">
                       {new Date(record.date).toLocaleDateString()}
                     </td>
@@ -46,6 +84,13 @@ const AvailabilityHistoryModal = ({ isOpen, onClose, availabilityHistory }) => {
             )}
           </tbody>
         </table>
+         <Pagination
+         currentPage={currentPage}
+         totalPages={totalPages}
+         onPageChange={handlePageChange}
+       />
+       </>
+        )}
       </div>
       <div className="flex justify-end mt-4">
         <Button onClick={onClose}>Close</Button>

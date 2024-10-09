@@ -19,3 +19,12 @@ export const deleteShop = async (shopId) => {
   const response = await api.delete(`/shops/${shopId}`);
   return response.data;
 };
+
+export const assignUsersToShopShift = async (shopId,data) => {
+  try {
+    const response = await api.post(`/shops/${shopId}/assign-users`,data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to assign users to shop shift.');
+  }
+};

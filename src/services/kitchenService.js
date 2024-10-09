@@ -19,3 +19,12 @@ export const deleteKitchen = async (kitchenId) => {
   const response = await api.delete(`/kitchens/${kitchenId}`);
   return response.data;
 };
+
+export const assignUsersToKitchenShift = async (kitchenId, data) => {
+  try {
+    const response = await api.post(`/kitchens/${kitchenId}/assign-users`,data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to assign users to kitchen shift.');
+  }
+};
